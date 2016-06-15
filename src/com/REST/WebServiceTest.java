@@ -81,9 +81,9 @@ public class WebServiceTest  {
 		//initialize the tester
 		tester.init();
 		//test for Post Text Entry
-	//	tester.testPostText("This is the client text String");
+		tester.testPostText("This is the client text String");
 		//test for retrieve all Text
-	//	tester.testAllText("UmairNasir");
+		tester.testAllText("UmairNasir");
 		//test for reply submission
 		tester.testReplyText("UmairNasir", "This is UMAIRNASIR", "This is the reply Sent from the Client");
 	}

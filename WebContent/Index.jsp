@@ -27,7 +27,7 @@ width:auto;
     border-style: solid;
     border-width: 5px;
     overflow-y:scroll;
-    height:600px;
+    height:560px;
 }
 </style>
 <body >
@@ -63,13 +63,13 @@ width:auto;
 		<input style="display:none;" class="btn btn-default" type="button" name="fetch_lat_lng" id="fetch_lat_lng" value="Get LAT LANG" onclick="getWeather()">	  
 	  	
 	  </div>
+	  	  <font color="red"><div id="cord"></div></font>
 	  <div class="form-group">
 	  	<h1><div id="title">Data will be displayed below</div></h1>
 	  </div>
 	  <div class="form-group">
 	  	<h3><div id="data"></div></h3>
 	  </div>
-	  <font color="red"><div id="cord"></div></font>
 	  
 <!-- 	  <button style="display:none;" type="submit" class="btn btn-default">Submit</button> -->
 </form>
