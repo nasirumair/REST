@@ -13,12 +13,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 </head>
+<title>RESTFUL INTERFACE</title>
 <style>
 .mainDiv {
 background-color:#ADD8E6;
 width:auto;
 } 
 
+body{
+background-color:#ADD8E6;
+}
 .dataDiv:hover{
 	background-color:  #F9EDED;
 }

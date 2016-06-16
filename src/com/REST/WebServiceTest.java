@@ -86,7 +86,9 @@ public class WebServiceTest  {
 		tester.testAllText("UmairNasir");
 		//test for reply submission
 		tester.testReplyText("UmairNasir", "This is UMAIRNASIR", "This is the reply Sent from the Client");
+		
 	}
+	
 	private void testReplyText(String user, String text, String reply) {
 		// TODO Auto-generated method stub	
 		Form form = new Form();
