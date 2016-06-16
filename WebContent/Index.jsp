@@ -26,8 +26,8 @@ width:auto;
 #data{
     border-style: solid;
     border-width: 5px;
-    overflow-y:scroll;
-    height:560px;
+  /*   overflow-y:scroll;
+    height:560px; */
 }
 </style>
 <body >
