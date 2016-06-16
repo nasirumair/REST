@@ -47,8 +47,38 @@ public class UserService {
 		List<Text> textList = userDao.getAllText(user);
 		Text t = new Text(user, text, lat, lng, temp);
 		textList.add(t);
-		userDao.savetext(textList);
+		userDao.savetext(textList, user);
 		return text+","+lat+","+lng+","+temp;
+	}
+	
+	@PUT
+	@Path("/users/delText")
+	@Produces(MediaType.APPLICATION_XML)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Text> deleteText(@FormParam("text") String text,@FormParam("user") String user,
+			@FormParam("time") String time, @FormParam("date") String date,
+			@Context HttpServletResponse servletResponse) throws IOException{
+		System.out.println(text+user+time+date);
+		List<Text> newTextList = new ArrayList<Text>();
+		List<Text> textList = userDao.getAllText(user);
+		for(Text t: textList){
+			System.out.println(","+t.getText().equals(text)+",");
+			if(t.getUserName().equals(user) && t.getText().equals(text) && t.getTime().equals(time) && t.getDate().equals(date)){
+				continue;
+			}else{
+				if(t != null){
+					newTextList.add(t);
+				}
+				System.out.println("element removed!");
+			}
+		}
+		if(newTextList.size() == 0){
+			userDao.savetext(null, user);
+			return null;
+		}
+		userDao.savetext(newTextList, user);
+
+		return userDao.getAllText(user);
 	}
 	
 	@GET

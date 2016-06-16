@@ -93,9 +93,9 @@ public class UserDao {
 		db.postData("jdbc:sqlserver://localhost;Database=testDB", "dpmdev", "dpmdev", userList);
 	}
 	
-	public void savetext(List<Text> textList){
+	public void savetext(List<Text> textList, String user){
 		JDBC db = new JDBC();
-		db.postText("jdbc:sqlserver://localhost;Database=testDB", "dpmdev", "dpmdev", textList);
+		db.postText("jdbc:sqlserver://localhost;Database=testDB", "dpmdev", "dpmdev", textList, user);
 	}
 	
 	public List<Text> getAllText(String user){
@@ -112,6 +112,6 @@ public class UserDao {
 				break;
 			}
 		}
-		savetext(textList);
+		savetext(textList, user);
 	}
 }

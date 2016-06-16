@@ -69,7 +69,7 @@ public class JDBC {
 		return hm;
 
 	}
-	
+
 	public List<Text> getTextData(String DB_URL,String USER, String PASS, String userName){
 		List<Text> list = new ArrayList<Text>();
 		try{
@@ -127,7 +127,7 @@ public class JDBC {
 		return list;
 
 	}
-	
+
 	public void postData(String DB_URL,String USER, String PASS, List<User> userList){
 		HashMap<Integer, User> hm = new HashMap<Integer,User>();
 		try{
@@ -175,10 +175,10 @@ public class JDBC {
 			}//end finally try
 		}
 
-		
+
 	}
-	
-	public void postText(String DB_URL,String USER, String PASS, List<Text> textList){
+
+	public void postText(String DB_URL,String USER, String PASS, List<Text> textList, String user){
 		/*for(Text text: textList){
 			System.out.println(text.getUserName());
 			System.out.println(text.getText());
@@ -202,23 +202,26 @@ public class JDBC {
 			System.out.println("Creating statement...POSTING TEXT DATA");
 			stmt = conn.createStatement();
 			String sql;
-			
-			sql = "DELETE FROM textTable where userName = '"+textList.get(0).getUserName()+"';";
+
+			sql = "DELETE FROM textTable where userName = '"+user+"';";
 			stmt.executeUpdate(sql);
-			for(Text text: textList){
-				
-				PreparedStatement update = conn.prepareStatement( "INSERT INTO textTable (userName, textEntry, time, date, reply, latitude, longitude, temp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-			    update.setString(1,text.getUserName());
-			    update.setString(2, text.getText());
-			    update.setString(3,text.getTime());
-			    update.setString(4, text.getDate());
-			    update.setString(5,text.getReply());
-			    update.setString(6, text.getLat());
-			    update.setString(7,text.getLng());
-			    update.setString(8, text.getTemp());
-				update.executeUpdate();
+			if(textList != null){
+
+				for(Text text: textList){
+
+					PreparedStatement update = conn.prepareStatement( "INSERT INTO textTable (userName, textEntry, time, date, reply, latitude, longitude, temp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+					update.setString(1,text.getUserName());
+					update.setString(2, text.getText());
+					update.setString(3,text.getTime());
+					update.setString(4, text.getDate());
+					update.setString(5,text.getReply());
+					update.setString(6, text.getLat());
+					update.setString(7,text.getLng());
+					update.setString(8, text.getTemp());
+					update.executeUpdate();
+				}
 			}
-			
+
 			//STEP 5: Extract data from result set
 			System.out.println("text data records inserted into DB");
 			//STEP 6: Clean-up environment
@@ -245,6 +248,6 @@ public class JDBC {
 			}//end finally try
 		}
 
-		
+
 	}
 }

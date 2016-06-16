@@ -168,7 +168,6 @@ width:auto;
 		if (request.readyState == 4 && request.status == 200) {
 			var txtDocument = request.responseText;
 			var textArray= txtDocument.split(",");
-			alert(textArray);
  			document.getElementById('data').innerHTML = "&emsp;&emsp;<b>Text</b>: "+textArray[0]+"&emsp;&emsp;<b>Lat</b>: "+textArray[1]+"  <b>Lng</b>: "+textArray[2]+"  <b>Temp</b>: "+textArray[3]+"&deg; C";
 		}
 		if (request.readyState == 4 && request.status != 200) {
@@ -287,6 +286,7 @@ width:auto;
  			var lngs= xmlDocument.getElementsByTagName("lng");
  			var temps = xmlDocument.getElementsByTagName("temp");
  			var replies = xmlDocument.getElementsByTagName("reply");
+ 			var users = xmlDocument.getElementsByTagName("userName");
  			if(texts.length==0){
  				document.getElementById('data').innerHTML = "No text data was found";
  			}
@@ -297,11 +297,13 @@ width:auto;
 				var lat = lats[i].childNodes[0].nodeValue;
 				var lng = lngs[i].childNodes[0].nodeValue;
 				var temp = temps[i].childNodes[0].nodeValue;
+				var user = users[i].childNodes[0].nodeValue;
+				
 				if(replies[i].childNodes[0] != null){
 					var reply = replies[i].childNodes[0].nodeValue;
 				}
 				
-				document.getElementById('data').innerHTML += "<div class='dataDiv' id="+i+" onclick='reply(id)'><b>["+i+"]</b>: <span id=\"mes"+i+"\">"+text+ "</span>  <b>Time</b>: "+time+"  <b>Date</b>: "+date+"  <b>Lat</b>: "+lat+"  <b>Lng</b>: "+lng+"  <b>Temp</b>: "+temp+"</div><br>";
+				document.getElementById('data').innerHTML += "<div class='dataDiv' id="+i+" onclick='reply(id)'><b>["+i+"]</b>: <span id=\"mes"+i+"\">"+text+ "</span>  <b>Time</b>: "+time+"  <b>Date</b>: "+date+"  <b>Lat</b>: "+lat+"  <b>Lng</b>: "+lng+"  <b>Temp</b>: "+temp+"<input style=\"float: right;\" class=\"btn btn-default\" type=\"button\" name=\"del_text"+i+"\" id=\"del_text"+i+"\" value=\"Delete\" onclick=\"delText('"+text+"','"+user+"','"+time+"','"+date+"')\"></div><br>";
 				 if(reply != null && reply != "" && replies[i].childNodes[0] != null){
 					var iDiv = document.createElement('div');
 					iDiv.id = 'replyBlock'+i;
@@ -317,6 +319,18 @@ width:auto;
 		
 		}
 
+	}
+	
+	function delText(text, user, time, date){
+	
+	document.getElementById('data').innerHTML = "";
+	createRequest();
+	var url = "https://localhost:8443/UserManagement/rest/UserService/users/delText";
+	request.onreadystatechange = handleAllTextResponse;
+	request.open("PUT", encodeURI(url), true);
+	request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	request.send("text="+text+"&user="+user+"&time="+time+"&date="+date);
+	
 	}
 	
 	function reply(id) {
