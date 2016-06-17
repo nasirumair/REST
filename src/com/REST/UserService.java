@@ -36,11 +36,12 @@ public class UserService {
 //		return "User: "+user+" says: "+t.getText() + " at: "+t.getTime()+ " on: "+t.getDate();
 //	}
 	
+	
 	@PUT
 	@Path("/users/setText")
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public String getText(@FormParam("text") String text,@FormParam("user") String user,
+	public String getSingleText(@FormParam("text") String text,@FormParam("user") String user,
 			@FormParam("lat") String lat, @FormParam("lng") String lng,
 			@FormParam("temp") String temp,	@Context HttpServletResponse servletResponse) throws IOException{
 		System.out.println(text+user+lat+lng+temp);
@@ -49,6 +50,13 @@ public class UserService {
 		textList.add(t);
 		userDao.savetext(textList, user);
 		return text+","+lat+","+lng+","+temp;
+	}
+	
+	@GET
+	@Path("/users/get/{text}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getText(@PathParam("text") String text){
+		return   text; 
 	}
 	
 	@PUT

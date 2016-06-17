@@ -80,22 +80,41 @@ public class WebServiceTest  {
 		WebServiceTest tester = new WebServiceTest();
 		//initialize the tester
 		tester.init();
+		//test for getText
+		tester.testGetText("This is the get text String");
 		//test for Post Text Entry
 		tester.testPostText("This is the client text String");
 		//test for retrieve all Text
 		tester.testAllText("UmairNasir");
 		//test for reply submission
 		tester.testReplyText("UmairNasir", "This is UMAIRNASIR", "This is the reply Sent from the Client");
-		
+
 	}
-	
+
+	private void testGetText(String text) {
+		// TODO Auto-generated method stub
+		String callResult = client
+				.target(REST_SERVICE_URL)
+				.path("/get/"+text)
+				.request(MediaType.TEXT_PLAIN)
+				.get(String.class);
+
+		String result = PASS;
+		if(text.equals(callResult)){
+			System.out.println("Test case name: testReplyText("+text+"), Result: " + result );
+			System.out.println("--------------- Response: "+callResult );
+		}else{
+			System.out.println("Test case name: testReplyText, Result: " + result );
+		}	
+	}
+
 	private void testReplyText(String user, String text, String reply) {
 		// TODO Auto-generated method stub	
 		Form form = new Form();
 		form.param("text", text);
 		form.param("user", user);
 		form.param("reply", reply);
-	
+
 		String callResult = client
 				.target(REST_SERVICE_URL)
 				.path("/setReplyText")
@@ -103,7 +122,7 @@ public class WebServiceTest  {
 				.post(Entity.entity(form,
 						MediaType.APPLICATION_FORM_URLENCODED),
 						String.class);
-	
+
 		String result = PASS;
 		if(reply.equals(callResult)){
 			System.out.println("Test case name: testReplyText("+user+","+text+"), Result: " + result );
@@ -111,8 +130,8 @@ public class WebServiceTest  {
 		}else{
 			System.out.println("Test case name: testReplyText, Result: " + result );
 		}
-		
-		
+
+
 
 	}
 

@@ -51,7 +51,7 @@ background-color:#ADD8E6;
 		<input class="form-control" type="text" name="userName" id="userName" placeholder="User Name"/>
 	  </div>
 	   <div class="form-group">
-	    <label for="textEntry">Text entry for above user</label>
+	    <label for="textEntry">Text entry for above user / Random Text</label>
 		<input class="form-control" type="text" name="textEntry" id="textEntry" placeholder="Text Entry"/> 
 	  </div>
 	  <div class="form-group">
@@ -62,12 +62,12 @@ background-color:#ADD8E6;
 	  <div class="form-group">
 	  	<input style="display:none;" class="btn btn-default" type="button" name="fetch_user" id="fetch_user" value="Get User Data" onclick="getSingle()">
 		<input style="display:none;" class="btn btn-default" type="button" name="fetch_all_users" id="fetch_all_users" value="Get All User Data" onclick="getAll()">
-		<input class="btn btn-default" type="button" name="post_text" id="post_text" value="Done" onclick="getText()">
+		<input class="btn btn-default" type="button" name="post_text" id="post_text" value="Post Text Data" onclick="getText()">
+		<input class="btn btn-default" type="button" name="get_Text" id="get_Text" value="Done" onclick="getRand()">	
 		<input class="btn btn-default" type="button" name="fetch_all_text" id="fetch_all_text" value="Get All Text Data" onclick="getAllText()">
 		<input style="display:none;" class="btn btn-default" type="button" name="fetch_lat_lng" id="fetch_lat_lng" value="Get LAT LANG" onclick="getWeather()">	  
-	  	
+	  	<font color="red" style="float: right;"><span id="cord"></span></font>  	
 	  </div>
-	  	  <font color="red"><div id="cord"></div></font>
 	  <div class="form-group">
 	  	<h1><div id="title">Data will be displayed below</div></h1>
 	  </div>
@@ -83,6 +83,51 @@ background-color:#ADD8E6;
 
 <script language="javascript" type="text/javascript">
 	var request = null;
+
+	var user_name = document.getElementById("userName");
+	user_name.addEventListener("keydown", function (e) {
+	    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+	    	getAllText();
+	    }
+	}); 
+	
+	var text_field = document.getElementById("textEntry");
+	text_field.addEventListener("keydown", function (e) {
+	    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+	    	getRand();
+	    }
+	});
+	
+	
+	function getRand(){
+		createRequest();
+		document.getElementById('data').innerHTML = "";
+		var text = document.getElementById("textEntry").value;
+		
+		if(text == null || text == "" || text=="undefined"){
+			alert("Please enter a value for the Text");
+			window.setTimeout(function () { document.getElementById('textEntry').focus(); }, 0); 
+			return;
+		}
+		
+		document.getElementById('title').innerHTML = "Displaying Submitted Text";
+		var url = "https://localhost:8443/UserManagement/rest/UserService/users/get/"+text;
+		request.onreadystatechange = handleRandResponse;
+		request.open("GET", encodeURI(url), true);
+		request.send(null);
+	}
+	
+	function handleRandResponse(){
+		
+		if (request.readyState == 4 && request.status == 200) {
+			var txtDocument = request.responseText;
+ 			document.getElementById('data').innerHTML = "&emsp;&emsp;<b>Text</b>: "+txtDocument;
+		}
+		if (request.readyState == 4 && request.status != 200) {
+			document.getElementById('data').innerHTML = "No text data was found";
+		}
+		
+	}
 	
 	function getText() {
 		createRequest();
@@ -90,14 +135,14 @@ background-color:#ADD8E6;
 		var text = document.getElementById("textEntry").value;
 		var userName = document.getElementById("userName").value;
 		var city = document.getElementById("city").value;
-		if(text == null || text == "" || text=="undefined"){
-			alert("Please enter a value for the Text");
-			window.setTimeout(function () { document.getElementById('text').focus(); }, 0); 
-			return;
-		}
 		if(userName == null || userName == "" || userName=="undefined"){
 			alert("Please enter a value for the User Name");
 			window.setTimeout(function () { document.getElementById('userName').focus(); }, 0); 
+			return;
+		}
+		if(text == null || text == "" || text=="undefined"){
+			alert("Please enter a value for the Text");
+			window.setTimeout(function () { document.getElementById('textEntry').focus(); }, 0); 
 			return;
 		}
 		if(city == null || city == "" || city=="undefined"){
@@ -118,6 +163,18 @@ background-color:#ADD8E6;
 		
 	}
 	
+	function handleTextResponse() {
+		if (request.readyState == 4 && request.status == 200) {
+			var txtDocument = request.responseText;
+			var textArray= txtDocument.split(",");
+ 			document.getElementById('data').innerHTML = "&emsp;&emsp;<b>Text</b>: "+textArray[0]+"&emsp;&emsp;<b>Lat</b>: "+textArray[1]+"  <b>Lng</b>: "+textArray[2]+"  <b>Temp</b>: "+textArray[3]+"&deg; C";
+		}
+		if (request.readyState == 4 && request.status != 200) {
+			document.getElementById('data').innerHTML = "No text data was found";
+		}
+
+	}
+	
 	function getWeather(){
 
 		createRequest();
@@ -130,6 +187,24 @@ background-color:#ADD8E6;
 		request.open("GET", encodeURI(url), true);
 		request.send(null);
     }
+	
+	function handleWeatherResponse() {
+		if (request.readyState == 4 && request.status == 200) {
+			var lat = request.response.location.lat;
+			var lng = request.response.location.lon;
+			var temp = request.response.current.temp_c;
+			document.getElementById('cord').innerHTML = "Latitude: "+lat+" and Longitude: "+lng+" and Temperature: "+temp+"&deg; C";
+			document.getElementById('lat').value = lat;
+			document.getElementById('lng').value = lng;
+			document.getElementById('temp').value = temp;
+
+		}
+		
+		if (request.readyState == 4 && request.status != 200) {
+			document.getElementById('data').innerHTML = "No weather data was found";
+		}
+
+	}
 	
 	function getReplyText(replyText, id, text) {
 		createRequest();
@@ -168,14 +243,48 @@ background-color:#ADD8E6;
 		
 	}
 	
-	function handleTextResponse() {
+	function handleAllTextResponse() {
+		
 		if (request.readyState == 4 && request.status == 200) {
-			var txtDocument = request.responseText;
-			var textArray= txtDocument.split(",");
- 			document.getElementById('data').innerHTML = "&emsp;&emsp;<b>Text</b>: "+textArray[0]+"&emsp;&emsp;<b>Lat</b>: "+textArray[1]+"  <b>Lng</b>: "+textArray[2]+"  <b>Temp</b>: "+textArray[3]+"&deg; C";
+			var xmlDocument = request.responseXML;
+ 			var texts = xmlDocument.getElementsByTagName("text");
+ 			var times = xmlDocument.getElementsByTagName("time");
+ 			var dates = xmlDocument.getElementsByTagName("date");
+ 			var lats = 	xmlDocument.getElementsByTagName("lat");
+ 			var lngs= xmlDocument.getElementsByTagName("lng");
+ 			var temps = xmlDocument.getElementsByTagName("temp");
+ 			var replies = xmlDocument.getElementsByTagName("reply");
+ 			var users = xmlDocument.getElementsByTagName("userName");
+ 			if(texts.length==0){
+ 				document.getElementById('data').innerHTML = "No text data was found";
+ 			}
+ 			for (var i = 0; i < texts.length; i++) {
+				var text = texts[i].childNodes[0].nodeValue;
+				var time = times[i].childNodes[0].nodeValue;
+				var date = dates[i].childNodes[0].nodeValue;
+				var lat = lats[i].childNodes[0].nodeValue;
+				var lng = lngs[i].childNodes[0].nodeValue;
+				var temp = temps[i].childNodes[0].nodeValue;
+				var user = users[i].childNodes[0].nodeValue;
+				
+				if(replies[i].childNodes[0] != null){
+					var reply = replies[i].childNodes[0].nodeValue;
+				}
+				
+				document.getElementById('data').innerHTML += "<div class='dataDiv' id="+i+" onclick='reply(id)'><b>["+i+"]</b>: <span id=\"mes"+i+"\">"+text+ "</span>  <b>Time</b>: "+time+"  <b>Date</b>: "+date+"  <b>Lat</b>: "+lat+"  <b>Lng</b>: "+lng+"  <b>Temp</b>: "+temp+"<input style=\"float: right; height: auto\" class=\"btn btn-default\" type=\"button\" name=\"del_text"+i+"\" id=\"del_text"+i+"\" value=\"Delete\" onclick=\"delText('"+text+"','"+user+"','"+time+"','"+date+"')\"></div><br>";
+				 if(reply != null && reply != "" && replies[i].childNodes[0] != null){
+					var iDiv = document.createElement('div');
+					iDiv.id = 'replyBlock'+i;
+					iDiv.className = 'replyBlock'+i;
+					iDiv.innerHTML = "&emsp;&emsp;&emsp;&emsp;&#8627;&emsp;"+reply;	
+					document.getElementById(i).appendChild(iDiv);
+				} 
+				
+ 			}
 		}
 		if (request.readyState == 4 && request.status != 200) {
-			document.getElementById('data').innerHTML = "No text data was found";
+				document.getElementById('data').innerHTML = "No text data was found";
+		
 		}
 
 	}
@@ -237,23 +346,6 @@ background-color:#ADD8E6;
 			
 	}
 	
-	function handleWeatherResponse() {
-		if (request.readyState == 4 && request.status == 200) {
-			var lat = request.response.location.lat;
-			var lng = request.response.location.lon;
-			var temp = request.response.current.temp_c;
-			document.getElementById('cord').innerHTML = "Latitude: "+lat+" and Longitude: "+lng+" and Temperature: "+temp+"&deg; C";
-			document.getElementById('lat').value = lat;
-			document.getElementById('lng').value = lng;
-			document.getElementById('temp').value = temp;
-
-		}
-		
-		if (request.readyState == 4 && request.status != 200) {
-			document.getElementById('data').innerHTML = "No weather data was found";
-		}
-
-	}
 
 	function handleResponse() {
 	
@@ -275,52 +367,6 @@ background-color:#ADD8E6;
 		}
 		if (request.readyState == 4 && request.status != 200) {
 			document.getElementById('data').innerHTML = "No data was found";
-		}
-
-	}
-	
-	function handleAllTextResponse() {
-	
-		if (request.readyState == 4 && request.status == 200) {
-			var xmlDocument = request.responseXML;
- 			var texts = xmlDocument.getElementsByTagName("text");
- 			var times = xmlDocument.getElementsByTagName("time");
- 			var dates = xmlDocument.getElementsByTagName("date");
- 			var lats = 	xmlDocument.getElementsByTagName("lat");
- 			var lngs= xmlDocument.getElementsByTagName("lng");
- 			var temps = xmlDocument.getElementsByTagName("temp");
- 			var replies = xmlDocument.getElementsByTagName("reply");
- 			var users = xmlDocument.getElementsByTagName("userName");
- 			if(texts.length==0){
- 				document.getElementById('data').innerHTML = "No text data was found";
- 			}
- 			for (var i = 0; i < texts.length; i++) {
-				var text = texts[i].childNodes[0].nodeValue;
-				var time = times[i].childNodes[0].nodeValue;
-				var date = dates[i].childNodes[0].nodeValue;
-				var lat = lats[i].childNodes[0].nodeValue;
-				var lng = lngs[i].childNodes[0].nodeValue;
-				var temp = temps[i].childNodes[0].nodeValue;
-				var user = users[i].childNodes[0].nodeValue;
-				
-				if(replies[i].childNodes[0] != null){
-					var reply = replies[i].childNodes[0].nodeValue;
-				}
-				
-				document.getElementById('data').innerHTML += "<div class='dataDiv' id="+i+" onclick='reply(id)'><b>["+i+"]</b>: <span id=\"mes"+i+"\">"+text+ "</span>  <b>Time</b>: "+time+"  <b>Date</b>: "+date+"  <b>Lat</b>: "+lat+"  <b>Lng</b>: "+lng+"  <b>Temp</b>: "+temp+"<input style=\"float: right;\" class=\"btn btn-default\" type=\"button\" name=\"del_text"+i+"\" id=\"del_text"+i+"\" value=\"Delete\" onclick=\"delText('"+text+"','"+user+"','"+time+"','"+date+"')\"></div><br>";
-				 if(reply != null && reply != "" && replies[i].childNodes[0] != null){
-					var iDiv = document.createElement('div');
-					iDiv.id = 'replyBlock'+i;
-					iDiv.className = 'replyBlock'+i;
-					iDiv.innerHTML = "&emsp;&emsp;&emsp;&emsp;&#8627;&emsp;"+reply;	
-					document.getElementById(i).appendChild(iDiv);
-				} 
-				
- 			}
-		}
-		if (request.readyState == 4 && request.status != 200) {
-				document.getElementById('data').innerHTML = "No text data was found";
-		
 		}
 
 	}
