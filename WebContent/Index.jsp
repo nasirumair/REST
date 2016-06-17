@@ -62,7 +62,7 @@ background-color:#ADD8E6;
 	  <div class="form-group">
 	  	<input style="display:none;" class="btn btn-default" type="button" name="fetch_user" id="fetch_user" value="Get User Data" onclick="getSingle()">
 		<input style="display:none;" class="btn btn-default" type="button" name="fetch_all_users" id="fetch_all_users" value="Get All User Data" onclick="getAll()">
-		<input class="btn btn-default" type="button" name="post_text" id="post_text" value="Post Text Data" onclick="getText()">
+		<input class="btn btn-default" type="button" name="post_text" id="post_text" value="Done" onclick="getText()">
 		<input class="btn btn-default" type="button" name="fetch_all_text" id="fetch_all_text" value="Get All Text Data" onclick="getAllText()">
 		<input style="display:none;" class="btn btn-default" type="button" name="fetch_lat_lng" id="fetch_lat_lng" value="Get LAT LANG" onclick="getWeather()">	  
 	  	
